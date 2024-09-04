@@ -1,8 +1,8 @@
 {
-  "domain": "integration_blueprint",
-  "name": "Integration blueprint",
+  "domain": "nintendo_wiiu",
+  "name": "Wii U",
   "codeowners": [
-    "@ludeeus"
+    "@ItzSwirlz"
   ],
   "config_flow": true,
   "documentation": "https://github.com/ludeeus/integration_blueprint",
