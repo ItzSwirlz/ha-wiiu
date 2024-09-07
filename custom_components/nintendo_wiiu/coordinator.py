@@ -36,7 +36,7 @@ class WiiUDataUpdateCoordinator(DataUpdateCoordinator):
             hass=hass,
             logger=LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(hours=1),
+            update_interval=timedelta(seconds=10),
         )
 
     async def _async_setup(self):
@@ -48,7 +48,7 @@ class WiiUDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> Any:
         """Update data via library."""
         try:
-            return await self.config_entry.runtime_data.client.async_get_data()
+            return await self.config_entry.runtime_data.client.async_get_current_title()
         except IntegrationWiiUApiClientAuthenticationError as exception:
             raise ConfigEntryAuthFailed(exception) from exception
         except IntegrationWiiUApiClientError as exception:

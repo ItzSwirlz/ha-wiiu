@@ -55,7 +55,12 @@ class IntegrationWiiUApiClient:
             url="https://jsonplaceholder.typicode.com/posts/1",
         )
 
-    async def async_get_device_serial(self) -> str | None:
+    async def async_get_current_title(self) -> Any:
+        return await self._api_wrapper(
+            method="get", url="http://" + self._ip + "/title/current"
+        )
+
+    async def async_get_device_serial(self) -> Any:
         return await self._api_wrapper(
             method="get", url="http://" + self._ip + "/device/serial_id"
         )
@@ -82,9 +87,9 @@ class IntegrationWiiUApiClient:
                 _verify_response_or_raise(response)
 
                 # Not all Ristretto requests return information, prevent an exception being thrown
-                if data:
-                    return await response.json()
-                return await response.json(content_type=None)
+                # if data:
+                return response
+                # return await response.json(content_type="text/html")
 
         except TimeoutError as exception:
             msg = f"Timeout error fetching information - {exception}"

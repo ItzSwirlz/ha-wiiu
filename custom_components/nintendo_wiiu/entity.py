@@ -25,5 +25,5 @@ class IntegrationWiiUEntity(CoordinatorEntity[WiiUDataUpdateCoordinator]):
                     coordinator.config_entry.entry_id,
                 ),
             },
-            serial_number=coordinator.config_entry.runtime_data.client.async_get_device_serial(),
+            serial_number=coordinator.config_entry.runtime_data.client.async_get_device_serial().text(),
         )
