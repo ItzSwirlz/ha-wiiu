@@ -35,6 +35,7 @@ class WiiUDevice(MediaPlayerEntity):
         name: str,
         ip: str,
     ):
+        self._attr_unique_id = config.runtime_data.coordinator.config_entry.entry_id
         self._attr_name = name
         self._attr_state = MediaPlayerState.ON
         self.config = config
