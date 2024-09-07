@@ -39,6 +39,12 @@ class WiiUDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(hours=1),
         )
 
+    async def _async_setup(self):
+        """Setup the coordinator
+
+        This is data that only has to be dealt with once"""
+        # serial = await self.config_entry.runtime_data.coordinator.config_entry.
+
     async def _async_update_data(self) -> Any:
         """Update data via library."""
         try:

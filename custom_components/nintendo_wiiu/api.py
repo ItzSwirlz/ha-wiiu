@@ -7,6 +7,7 @@ from typing import Any
 
 import aiohttp
 import async_timeout
+from sqlalchemy import false
 
 
 class IntegrationWiiUApiClientError(Exception):
@@ -40,13 +41,11 @@ class IntegrationWiiUApiClient:
 
     def __init__(
         self,
-        username: str,
-        password: str,
+        ip: str,
         session: aiohttp.ClientSession,
     ) -> None:
         """Sample API Client."""
-        self._username = username
-        self._password = password
+        self._ip = ip
         self._session = session
 
     async def async_get_data(self) -> Any:
@@ -56,13 +55,14 @@ class IntegrationWiiUApiClient:
             url="https://jsonplaceholder.typicode.com/posts/1",
         )
 
-    async def async_set_title(self, value: str) -> Any:
-        """Get data from the API."""
+    async def async_get_device_serial(self) -> str | None:
         return await self._api_wrapper(
-            method="patch",
-            url="https://jsonplaceholder.typicode.com/posts/1",
-            data={"title": value},
-            headers={"Content-type": "application/json; charset=UTF-8"},
+            method="get", url="http://" + self._ip + "/device/serial_id"
+        )
+
+    async def async_shutdown(self):
+        return await self._api_wrapper(
+            method="post", url="http://" + self._ip + "/power/shutdown"
         )
 
     async def _api_wrapper(
@@ -75,14 +75,16 @@ class IntegrationWiiUApiClient:
         """Get information from the API."""
         try:
             async with async_timeout.timeout(10):
+                # We don't use SSL
                 response = await self._session.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    json=data,
+                    method=method, url=url, headers=headers, json=data, ssl=False
                 )
                 _verify_response_or_raise(response)
-                return await response.json()
+
+                # Not all Ristretto requests return information, prevent an exception being thrown
+                if data:
+                    return await response.json()
+                return await response.json(content_type=None)
 
         except TimeoutError as exception:
             msg = f"Timeout error fetching information - {exception}"

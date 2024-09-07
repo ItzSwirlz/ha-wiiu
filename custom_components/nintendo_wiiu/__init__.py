@@ -7,11 +7,13 @@ https://github.com/ItzSwirlz/nintendo_wiiu
 
 from __future__ import annotations
 
+from pickle import TRUE
 from typing import TYPE_CHECKING
 
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
+from homeassistant.const import Platform
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.loader import async_get_loaded_integration
+from sqlalchemy import true
 
 from .api import IntegrationWiiUApiClient
 from .coordinator import WiiUDataUpdateCoordinator
@@ -38,9 +40,8 @@ async def async_setup_entry(
     )
     entry.runtime_data = IntegrationWiiUData(
         client=IntegrationWiiUApiClient(
-            username=entry.data[CONF_USERNAME],
-            password=entry.data[CONF_PASSWORD],
-            session=async_get_clientsession(hass),
+            ip="192.168.1.195:8572",  # TODO: be configurable
+            session=async_get_clientsession(hass, verify_ssl=False),
         ),
         integration=async_get_loaded_integration(hass, entry.domain),
         coordinator=coordinator,
